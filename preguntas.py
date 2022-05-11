@@ -18,8 +18,8 @@ def pregunta_01():
     df = pd.read_csv("gm_2008_region.csv", sep=",")
 
     # Asigne la columna "life" a `y` y la columna "fertility" a `X`
-    y = df['life'].copy()
-    X = df['fertility'].copy()
+    y = df['life'].values
+    X = df['fertility'].values
 
     # Imprima las dimensiones de `y`
     print(y.shape)
@@ -28,10 +28,10 @@ def pregunta_01():
     print(X.shape)
 
     # Transforme `y` a un array de numpy usando reshape
-    y_reshaped = np.reshape(y.values, (y.shape[0],1))
+    y_reshaped = y.reshape(139,1)
 
     # Trasforme `X` a un array de numpy usando reshape
-    X_reshaped = np.reshape(X.values,(X.shape[0],1))
+    X_reshaped = X.reshape(139,1)
 
     # Imprima las nuevas dimensiones de `y`
     print(y_reshaped.shape)
@@ -53,16 +53,20 @@ def pregunta_02():
     print(df.shape)
 
     # Imprima la correlación entre las columnas `life` y `fertility` con 4 decimales.
-    print(df[['life','fertility']].corr().round(4))
+    correlacion = df[['life','fertility']].corr()
+    ar_cor = np.array(correlacion)[0][1]
+    print(ar_cor.round(4))
 
     # Imprima la media de la columna `life` con 4 decimales.
     print(df['life'].mean().round(4))
 
     # Imprima el tipo de dato de la columna `fertility`.
-    print(df['fertility'].dtype)
+    print(type(df['fertility']))
 
     # Imprima la correlación entre las columnas `GDP` y `life` con 4 decimales.
-    print(df[['GDP','life']].corr().round(4))
+    correlacion = df[['GDP','life']].corr()
+    ar_cor = np.array(correlacion)[0][1]
+    print(ar_cor.round(4))
 
 
 def pregunta_03():
@@ -75,10 +79,10 @@ def pregunta_03():
     df = pd.read_csv("gm_2008_region.csv",sep=',')
 
     # Asigne a la variable los valores de la columna `fertility`
-    X_fertility = df['fertility'].values.reshape(-1,1)
+    X_fertility = df['fertility'].values
 
     # Asigne a la variable los valores de la columna `life`
-    y_life = df['life'].values.reshape(-1,1)
+    y_life = df['life'].values
 
     # Importe LinearRegression
     from sklearn.linear_model import LinearRegression
@@ -89,18 +93,21 @@ def pregunta_03():
     # Cree El espacio de predicción. Esto es, use linspace para crear
     # un vector con valores entre el máximo y el mínimo de X_fertility
     prediction_space = np.linspace(
-        min(X_fertility),
         max(X_fertility),
-    ).reshape(-1, 1)
+        min(X_fertility),
+        139
+    ).reshape(139, 1)
 
     # Entrene el modelo usando X_fertility y y_life
-    reg.fit(X_fertility, y_life)
+    X_fertility_reshaped = X_fertility.reshape(139, 1)
+    y_life_reshaped = y_life.reshape(139, 1)
+    reg.fit(X_fertility_reshaped, y_life_reshaped)
 
     # Compute las predicciones para el espacio de predicción
     y_pred = reg.predict(prediction_space)
 
     # Imprima el R^2 del modelo con 4 decimales
-    print(reg.score(X_fertility, y_life).round(4))
+    print(reg.score(X_fertility_reshaped, y_life_reshaped).round(4))
 
 
 def pregunta_04():
